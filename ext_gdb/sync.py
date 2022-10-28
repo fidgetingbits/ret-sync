@@ -792,9 +792,12 @@ class Rln(WrappedCommand):
 
     def _invoke(self, arg, from_tty):
         try:
-            value = gdb.parse_and_eval(arg)
-            if (str(value)) == 'void':
-                raise ValueError
+            if not arg.startswith("0x"):
+                value = gdb.parse_and_eval(arg)
+                if (str(value)) == 'void':
+                    raise ValueError
+            else:
+                value = arg
             raddr = int(str(value), 16)
         except ValueError as e:
             rs_log("rln: failed to evaluate expression \"%s\"" % arg)
